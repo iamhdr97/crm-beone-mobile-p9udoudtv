@@ -7,7 +7,6 @@ import {
   LabelList,
   Legend,
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -26,6 +25,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  type ChartConfig,
 } from '@/components/ui/chart'
 import { MoreHorizontal } from 'lucide-react'
 import {
@@ -70,6 +70,28 @@ const funnelData = [
   { name: 'Fechado', value: 200, fill: 'hsl(var(--chart-4))' },
 ]
 
+const funnelChartConfig = {
+  value: {
+    label: 'Leads',
+  },
+  Novo: {
+    label: 'Novo',
+    color: 'hsl(var(--chart-1))',
+  },
+  Qualificado: {
+    label: 'Qualificado',
+    color: 'hsl(var(--chart-2))',
+  },
+  Negociação: {
+    label: 'Negociação',
+    color: 'hsl(var(--chart-3))',
+  },
+  Fechado: {
+    label: 'Fechado',
+    color: 'hsl(var(--chart-4))',
+  },
+} satisfies ChartConfig
+
 const performanceData = [
   { name: 'Ana', fechados: 40 },
   { name: 'Bruno', fechados: 30 },
@@ -77,6 +99,13 @@ const performanceData = [
   { name: 'Daniela', fechados: 27 },
   { name: 'Eduardo', fechados: 18 },
 ]
+
+const barChartConfig = {
+  fechados: {
+    label: 'Leads Fechados',
+    color: 'hsl(var(--primary))',
+  },
+} satisfies ChartConfig
 
 const allLeadsData = [
   {
@@ -220,19 +249,28 @@ const CoordenadorDashboard = () => (
           <CardTitle>Funil de Vendas</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <FunnelChart data={funnelData}>
-              <Tooltip />
-              <Funnel dataKey="value" nameKey="name" isAnimationActive>
-                <LabelList
-                  position="right"
-                  fill="#000"
-                  stroke="none"
-                  dataKey="name"
+          <ChartContainer
+            config={funnelChartConfig}
+            className="mx-auto aspect-square max-h-[300px]"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <FunnelChart>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel nameKey="name" />}
                 />
-              </Funnel>
-            </FunnelChart>
-          </ResponsiveContainer>
+                <Funnel data={funnelData} dataKey="value" nameKey="name">
+                  <LabelList
+                    position="right"
+                    fill="hsl(var(--foreground))"
+                    stroke="none"
+                    dataKey="name"
+                    className="font-semibold"
+                  />
+                </Funnel>
+              </FunnelChart>
+            </ResponsiveContainer>
+          </ChartContainer>
         </CardContent>
       </Card>
       <Card>
@@ -240,20 +278,30 @@ const CoordenadorDashboard = () => (
           <CardTitle>Performance por Vendedor</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={performanceData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip content={<ChartTooltipContent />} />
-              <Legend />
-              <Bar
-                dataKey="fechados"
-                fill="hsl(var(--primary))"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <ChartContainer
+            config={barChartConfig}
+            className="min-h-[300px] w-full"
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={performanceData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                />
+                <YAxis />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend />
+                <Bar
+                  dataKey="fechados"
+                  fill="var(--color-fechados)"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
         </CardContent>
       </Card>
     </div>
@@ -307,7 +355,7 @@ export default function Dashboard() {
       <div className="md:hidden">
         <VendedorDashboard />
       </div>
-      <div className="hidden md:block">
+      <div className="hidden md:block p-4">
         {userRole === 'coordenador' ? (
           <CoordenadorDashboard />
         ) : (
