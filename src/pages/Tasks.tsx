@@ -63,7 +63,7 @@ export default function Tasks() {
               key={status}
               variant={activeFilter === status ? 'default' : 'outline'}
               size="sm"
-              className="rounded-full whitespace-nowrap"
+              className="rounded-full whitespace-nowrap font-bold"
               onClick={() => setActiveFilter(status)}
             >
               {status}
@@ -78,7 +78,7 @@ export default function Tasks() {
             <Card
               key={task.id}
               className={cn(
-                'shadow-sm border-l-4',
+                'shadow-sm border-l-4 w-full',
                 getStatusColor(task.status),
               )}
             >
@@ -94,22 +94,22 @@ export default function Tasks() {
                     Prazo: {task.dueDate}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     size="sm"
-                    className="flex-1 bg-whatsapp hover:bg-whatsapp/90"
+                    className="flex-1 bg-whatsapp hover:bg-whatsapp/90 min-w-[120px]"
                   >
                     📱 WhatsApp
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 border-primary text-primary"
+                    className="flex-1 border-primary text-primary min-w-[120px]"
                   >
                     📞 Ligar
                   </Button>
                   {task.status !== 'Concluída' && (
-                    <Button size="sm" className="flex-1">
+                    <Button size="sm" className="flex-1 min-w-[120px]">
                       ✓ Concluir
                     </Button>
                   )}
@@ -119,7 +119,9 @@ export default function Tasks() {
           ))
         ) : (
           <div className="text-center py-16">
-            <h3 className="mt-2 text-lg font-semibold">Nenhuma tarefa aqui</h3>
+            <h3 className="mt-2 text-lg font-semibold">
+              Nenhuma tarefa aqui! 🎉
+            </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Você não tem tarefas com este status.
             </p>

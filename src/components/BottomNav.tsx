@@ -19,10 +19,10 @@ export const BottomNav = () => {
             to={item.to}
             className={({ isActive }) =>
               cn(
-                'inline-flex flex-col items-center justify-center px-5 font-medium text-gray-500 hover:bg-gray-50 transition-transform duration-200 active:scale-105',
+                'inline-flex flex-col items-center justify-center px-5 font-medium group transition-transform duration-200 active:scale-95',
                 {
                   'text-primary': isActive,
-                  'text-muted': !isActive,
+                  'text-gray-500 hover:text-primary': !isActive,
                 },
               )
             }

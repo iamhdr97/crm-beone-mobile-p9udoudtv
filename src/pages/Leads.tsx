@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { LeadStatusBadge, type LeadStatus } from '@/components/LeadStatusBadge'
 
-const leadStatuses = [
-  'Todos',
+const leadStatuses: LeadStatus[] = [
   'Novos',
   'Qualificados',
   'Negociação',
@@ -15,26 +15,48 @@ const leadStatuses = [
 ]
 
 const mockLeads = [
-  { id: 1, name: 'Maria Silva', phone: '(11) 98765-4321', status: 'Novos' },
+  {
+    id: 1,
+    name: 'Maria Silva',
+    phone: '(11) 98765-4321',
+    status: 'Novos' as LeadStatus,
+  },
   {
     id: 2,
     name: 'João Pereira',
     phone: '(21) 91234-5678',
-    status: 'Qualificados',
+    status: 'Qualificados' as LeadStatus,
   },
-  { id: 3, name: 'Ana Costa', phone: '(31) 95555-4444', status: 'Negociação' },
-  { id: 4, name: 'Carlos Souza', phone: '(41) 98888-7777', status: 'Novos' },
-  { id: 5, name: 'Beatriz Lima', phone: '(51) 97777-8888', status: 'Fechados' },
+  {
+    id: 3,
+    name: 'Ana Costa',
+    phone: '(31) 95555-4444',
+    status: 'Negociação' as LeadStatus,
+  },
+  {
+    id: 4,
+    name: 'Carlos Souza',
+    phone: '(41) 98888-7777',
+    status: 'Novos' as LeadStatus,
+  },
+  {
+    id: 5,
+    name: 'Beatriz Lima',
+    phone: '(51) 97777-8888',
+    status: 'Fechados' as LeadStatus,
+  },
   {
     id: 6,
     name: 'Ricardo Alves',
     phone: '(61) 96666-5555',
-    status: 'Perdidos',
+    status: 'Perdidos' as LeadStatus,
   },
 ]
 
 export default function Leads() {
-  const [activeFilter, setActiveFilter] = useState('Todos')
+  const [activeFilter, setActiveFilter] = useState<LeadStatus | 'Todos'>(
+    'Todos',
+  )
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredLeads = mockLeads
@@ -52,25 +74,29 @@ export default function Leads() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome ou telefone..."
-            className="pl-10 bg-gray-100 focus:bg-white focus:ring-primary focus:border-primary"
+            className="pl-10 bg-gray-100 focus:bg-white focus:ring-primary focus:border-primary h-11"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-2 -mb-2">
+          <Button
+            variant={activeFilter === 'Todos' ? 'default' : 'outline'}
+            size="sm"
+            className="rounded-full whitespace-nowrap font-bold"
+            onClick={() => setActiveFilter('Todos')}
+          >
+            Todos ({mockLeads.length})
+          </Button>
           {leadStatuses.map((status) => (
             <Button
               key={status}
               variant={activeFilter === status ? 'default' : 'outline'}
               size="sm"
-              className="rounded-full whitespace-nowrap"
+              className="rounded-full whitespace-nowrap font-bold"
               onClick={() => setActiveFilter(status)}
             >
-              {status} (
-              {status === 'Todos'
-                ? mockLeads.length
-                : mockLeads.filter((l) => l.status === status).length}
-              )
+              {status} ({mockLeads.filter((l) => l.status === status).length})
             </Button>
           ))}
         </div>
@@ -80,17 +106,15 @@ export default function Leads() {
         {filteredLeads.length > 0 ? (
           filteredLeads.map((lead) => (
             <Link to={`/leads/${lead.id}`} key={lead.id}>
-              <Card className="shadow-sm hover:shadow-md transition-shadow">
+              <Card className="shadow-sm hover:shadow-md transition-shadow w-full">
                 <CardContent className="p-4 flex justify-between items-center">
                   <div>
-                    <p className="font-bold text-base">{lead.name}</p>
+                    <p className="font-bold text-lg">{lead.name}</p>
                     <p className="text-sm text-muted-foreground">
                       {lead.phone}
                     </p>
                   </div>
-                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
-                    {lead.status}
-                  </span>
+                  <LeadStatusBadge status={lead.status} />
                 </CardContent>
               </Card>
             </Link>

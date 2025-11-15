@@ -43,13 +43,25 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 192 38% 38%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem; /* 8px */
 
     --chart-1: 192 70% 50%;
     --chart-2: 22 80% 50%;
     --chart-3: 280 70% 60%;
     --chart-4: 145 60% 45%;
     --chart-5: 340 80% 60%;
+
+    /* Status Colors */
+    --status-novos: 207 90% 95%; /* #E3F2FD */
+    --status-novos-foreground: 211 75% 42%; /* #1976D2 */
+    --status-qualificados: 55 100% 90%; /* #FFF9C4 */
+    --status-qualificados-foreground: 41 93% 51%; /* #F57F17 */
+    --status-negociacao: 30 100% 85%; /* #FFE0B2 */
+    --status-negociacao-foreground: 26 100% 45%; /* #E65100 */
+    --status-fechados: 125 67% 94%; /* #E8F5E9 */
+    --status-fechados-foreground: 123 49% 34%; /* #2E7D32 */
+    --status-perdidos: 353 100% 96%; /* #FFEBEE */
+    --status-perdidos-foreground: 0 65% 47%; /* #C62828 */
   }
 
   .dark {
@@ -99,6 +111,12 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Roboto', sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply active:scale-95 transition-transform duration-150;
   }
 }
 

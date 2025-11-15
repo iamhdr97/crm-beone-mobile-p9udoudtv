@@ -16,10 +16,12 @@ export default function Layout() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
-        <SidebarNav />
+        <div className="hidden md:flex">
+          <SidebarNav />
+        </div>
         <div className="flex-1 flex flex-col md:ml-64">
           <Header />
-          <main className="flex-1 pb-20 md:pb-0">
+          <main className="flex-1 pb-20 md:pb-0 p-0 md:p-4">
             <Outlet />
           </main>
           <BottomNav />

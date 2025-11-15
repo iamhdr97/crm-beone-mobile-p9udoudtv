@@ -6,8 +6,6 @@ import {
   FunnelChart,
   LabelList,
   Legend,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -29,7 +27,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-import { MoreHorizontal, Settings } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,11 +35,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-// Mock Data
 const vendedorMetrics = [
-  { title: 'Novos', value: 12 },
-  { title: 'Follow-ups', value: 8 },
-  { title: 'Fechados', value: 4 },
+  { title: 'Novos Leads', value: 12 },
+  { title: 'Follow-ups Hoje', value: 8 },
+  { title: 'Fechados no Mês', value: 4 },
+  { title: 'Tarefas Atrasadas', value: 2 },
 ]
 
 const todayFollowUps = [
@@ -70,7 +68,6 @@ const funnelData = [
   { name: 'Qualificado', value: 900, fill: 'hsl(var(--chart-2))' },
   { name: 'Negociação', value: 500, fill: 'hsl(var(--chart-3))' },
   { name: 'Fechado', value: 200, fill: 'hsl(var(--chart-4))' },
-  { name: 'Perdido', value: 300, fill: 'hsl(var(--chart-5))' },
 ]
 
 const performanceData = [
@@ -85,59 +82,42 @@ const allLeadsData = [
   {
     id: 1,
     nome: 'Juliana Paes',
-    whatsapp: '(11) 99999-1111',
     status: 'Negociação',
-    origem: 'Instagram',
     vendedor: 'Ana',
-    cidade: 'São Paulo',
-    estado: 'SP',
-    proximaAcao: '2025-11-16',
     criadoEm: '2025-11-10',
   },
   {
     id: 2,
     nome: 'Marcos Mion',
-    whatsapp: '(21) 98888-2222',
     status: 'Qualificado',
-    origem: 'Facebook',
     vendedor: 'Bruno',
-    cidade: 'Rio de Janeiro',
-    estado: 'RJ',
-    proximaAcao: '2025-11-17',
     criadoEm: '2025-11-11',
   },
 ]
 
-// Mock user role
-const userRole = 'coordenador' // Change to 'vendedor' to see the other view
+const userRole = 'coordenador'
 
 const VendedorDashboard = () => (
-  <div className="p-4 space-y-6">
-    <div className="bg-gradient-beone text-white -m-4 p-4 pt-20 rounded-b-3xl">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Olá, Vendedor</h1>
-        <Link to="/perfil">
-          <Settings className="w-6 h-6" />
-        </Link>
-      </div>
-      <div className="grid grid-cols-3 gap-4 mt-4">
+  <div className="space-y-6">
+    <div className="bg-gradient-beone text-white -mx-4 -mt-4 md:hidden p-4 pt-20 rounded-b-3xl">
+      <div className="grid grid-cols-2 gap-4 mt-4">
         {vendedorMetrics.map((metric) => (
           <Card
             key={metric.title}
             className="bg-white/20 backdrop-blur-sm border-0 text-white text-center"
           >
             <CardContent className="p-4">
-              <p className="text-2xl font-bold">{metric.value}</p>
-              <p className="text-xs">{metric.title}</p>
+              <p className="text-3xl font-bold">{metric.value}</p>
+              <p className="text-xs mt-1">{metric.title}</p>
             </CardContent>
           </Card>
         ))}
       </div>
     </div>
 
-    <section>
+    <div className="p-4 md:p-0">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-bold">⏰ Follow-ups de Hoje</h2>
+        <h2 className="text-xl font-bold">⏰ Follow-ups de Hoje</h2>
         <Link to="/tarefas" className="text-sm text-primary font-semibold">
           Ver todos →
         </Link>
@@ -156,13 +136,7 @@ const VendedorDashboard = () => (
                   size="sm"
                   className="flex-1 bg-whatsapp hover:bg-whatsapp/90"
                 >
-                  <a
-                    href={`https://wa.me/`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    📱 WhatsApp
-                  </a>
+                  📱 WhatsApp
                 </Button>
                 <Button
                   size="sm"
@@ -176,11 +150,11 @@ const VendedorDashboard = () => (
           </Card>
         ))}
       </div>
-    </section>
+    </div>
 
-    <section>
+    <div className="p-4 md:p-0">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-bold">👥 Meus Leads</h2>
+        <h2 className="text-xl font-bold">👥 Meus Leads Recentes</h2>
         <Link to="/leads" className="text-sm text-primary font-semibold">
           Ver todos →
         </Link>
@@ -200,13 +174,12 @@ const VendedorDashboard = () => (
           </Card>
         ))}
       </div>
-    </section>
+    </div>
   </div>
 )
 
 const CoordenadorDashboard = () => (
-  <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
-    <h1 className="text-3xl font-bold">Dashboard do Coordenador</h1>
+  <div className="space-y-8">
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader>
@@ -247,10 +220,10 @@ const CoordenadorDashboard = () => (
           <CardTitle>Funil de Vendas</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={{}} className="w-full h-[300px]">
-            <FunnelChart data={funnelData} layout="vertical">
+          <ResponsiveContainer width="100%" height={300}>
+            <FunnelChart data={funnelData}>
               <Tooltip />
-              <Funnel dataKey="value" nameKey="name">
+              <Funnel dataKey="value" nameKey="name" isAnimationActive>
                 <LabelList
                   position="right"
                   fill="#000"
@@ -259,7 +232,7 @@ const CoordenadorDashboard = () => (
                 />
               </Funnel>
             </FunnelChart>
-          </ChartContainer>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
       <Card>
@@ -267,16 +240,20 @@ const CoordenadorDashboard = () => (
           <CardTitle>Performance por Vendedor</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={{}} className="w-full h-[300px]">
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={performanceData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip content={<ChartTooltipContent />} />
               <Legend />
-              <Bar dataKey="fechados" fill="hsl(var(--primary))" />
+              <Bar
+                dataKey="fechados"
+                fill="hsl(var(--primary))"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
-          </ChartContainer>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
@@ -325,7 +302,6 @@ const CoordenadorDashboard = () => (
 )
 
 export default function Dashboard() {
-  // On mobile, always show Vendedor view. On desktop, show role-based view.
   return (
     <>
       <div className="md:hidden">

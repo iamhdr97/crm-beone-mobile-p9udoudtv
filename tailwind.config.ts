@@ -104,6 +104,28 @@ export default {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        status: {
+          novos: {
+            DEFAULT: 'hsl(var(--status-novos))',
+            foreground: 'hsl(var(--status-novos-foreground))',
+          },
+          qualificados: {
+            DEFAULT: 'hsl(var(--status-qualificados))',
+            foreground: 'hsl(var(--status-qualificados-foreground))',
+          },
+          negociacao: {
+            DEFAULT: 'hsl(var(--status-negociacao))',
+            foreground: 'hsl(var(--status-negociacao-foreground))',
+          },
+          fechados: {
+            DEFAULT: 'hsl(var(--status-fechados))',
+            foreground: 'hsl(var(--status-fechados-foreground))',
+          },
+          perdidos: {
+            DEFAULT: 'hsl(var(--status-perdidos))',
+            foreground: 'hsl(var(--status-perdidos-foreground))',
+          },
+        },
       },
       borderRadius: {
         '2xl': 'calc(var(--radius) * 2)',

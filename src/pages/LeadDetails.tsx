@@ -22,12 +22,13 @@ import {
 } from '@/components/ui/sheet'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { LeadStatusBadge, type LeadStatus } from '@/components/LeadStatusBadge'
 
 const mockLead = {
   id: '1',
   name: 'Maria Silva Santos',
   createdAt: '15 de Nov, 2025',
-  status: 'Qualificado',
+  status: 'Qualificados' as LeadStatus,
   whatsapp: '(11) 98765-4321',
   email: 'maria.santos@example.com',
   location: 'São Paulo, SP',
@@ -65,6 +66,10 @@ const copyToClipboard = (text: string) => {
   })
 }
 
+const formatPhoneNumberForLink = (phone: string) => {
+  return phone.replace(/\D/g, '')
+}
+
 export default function LeadDetails() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -92,18 +97,16 @@ export default function LeadDetails() {
         </div>
         <div className="text-center md:text-left">
           <h1 className="text-2xl font-bold">{mockLead.name}</h1>
-          <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-muted-foreground mt-1">
             <span>Criado em {mockLead.createdAt}</span>
             <span>•</span>
-            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
-              {mockLead.status}
-            </span>
+            <LeadStatusBadge status={mockLead.status} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3 mt-4">
-          <Button className="bg-whatsapp hover:bg-whatsapp/90 h-12">
+          <Button asChild className="bg-whatsapp hover:bg-whatsapp/90 h-12">
             <a
-              href={`https://wa.me/`}
+              href={`https://wa.me/55${formatPhoneNumberForLink(mockLead.whatsapp)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center"
@@ -111,9 +114,9 @@ export default function LeadDetails() {
               📱 WhatsApp
             </a>
           </Button>
-          <Button className="bg-primary h-12">
+          <Button asChild className="bg-primary h-12">
             <a
-              href={`tel:${mockLead.whatsapp}`}
+              href={`tel:${formatPhoneNumberForLink(mockLead.whatsapp)}`}
               className="flex items-center justify-center"
             >
               📞 Ligar
@@ -191,13 +194,13 @@ export default function LeadDetails() {
           </CardHeader>
           <CardContent>
             <div className="relative pl-6">
-              <div className="absolute left-8 top-2 bottom-2 w-0.5 bg-border" />
+              <div className="absolute left-3.5 top-2 bottom-2 w-0.5 bg-border" />
               {mockLead.history.map((item, index) => (
                 <div key={index} className="relative mb-6">
-                  <div className="absolute -left-2 top-1.5 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="absolute -left-0.5 top-1.5 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center ring-4 ring-gray-50">
                     <item.icon className="h-4 w-4 text-primary" />
                   </div>
-                  <div className="pl-8">
+                  <div className="pl-10">
                     <p className="font-bold">{item.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {item.content}
@@ -212,7 +215,7 @@ export default function LeadDetails() {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-attention bg-yellow-50">
+        <Card className="border-l-4 border-attention bg-attention/5">
           <CardHeader>
             <CardTitle>⏰ Próxima Ação</CardTitle>
           </CardHeader>
