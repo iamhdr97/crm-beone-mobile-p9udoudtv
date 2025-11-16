@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
-import { X, ChevronsUpDown } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { X, ChevronsUpDown, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Command,
