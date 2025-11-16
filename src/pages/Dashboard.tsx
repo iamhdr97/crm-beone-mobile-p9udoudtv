@@ -245,8 +245,11 @@ const CoordenadorDashboard = () => (
     </div>
     <div className="grid gap-8 md:grid-cols-2">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Funil de Vendas</CardTitle>
+          <Button asChild variant="link" className="text-primary">
+            <Link to="/funil">Ver Funil Completo →</Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <ChartContainer

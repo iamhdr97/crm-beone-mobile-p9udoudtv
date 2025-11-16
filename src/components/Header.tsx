@@ -28,6 +28,9 @@ const getHeaderConfig = (pathname: string) => {
       ),
     }
   }
+  if (pathname.startsWith('/funil')) {
+    return { ...baseConfig, title: 'Funil de Vendas' }
+  }
   if (pathname.startsWith('/leads/novo')) {
     return { ...baseConfig, title: 'Novo Lead', showBackButton: true }
   }

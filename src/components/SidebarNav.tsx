@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Users, CheckSquare, User, BarChart3 } from 'lucide-react'
+import { Home, Users, CheckSquare, User, Filter } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   Sidebar,
@@ -12,10 +12,10 @@ import {
 
 const navItems = [
   { to: '/dashboard', icon: Home, label: 'Dashboard' },
+  { to: '/funil', icon: Filter, label: 'Funil de Vendas' },
   { to: '/leads', icon: Users, label: 'Leads' },
   { to: '/tarefas', icon: CheckSquare, label: 'Tarefas' },
   { to: '/perfil', icon: User, label: 'Perfil' },
-  // { to: '/relatorios', icon: BarChart3, label: 'Relatórios' }, // For coordinators
 ]
 
 export const SidebarNav = () => {

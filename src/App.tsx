@@ -12,6 +12,7 @@ import LeadDetails from './pages/LeadDetails'
 import Tasks from './pages/Tasks'
 import Profile from './pages/Profile'
 import ResetPassword from './pages/ResetPassword'
+import SalesFunnel from './pages/SalesFunnel'
 
 const App = () => (
   <BrowserRouter>
@@ -25,6 +26,7 @@ const App = () => (
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/funil" element={<SalesFunnel />} />
           <Route path="/leads" element={<Leads />} />
           <Route path="/leads/novo" element={<AddLead />} />
           <Route path="/leads/:id" element={<LeadDetails />} />
