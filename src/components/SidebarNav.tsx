@@ -15,13 +15,12 @@ const navItems = [
   { to: '/funil', icon: Filter, label: 'Funil de Vendas' },
   { to: '/leads', icon: Users, label: 'Leads' },
   { to: '/tarefas', icon: CheckSquare, label: 'Tarefas' },
-  { to: '/perfil', icon: User, label: 'Perfil' },
 ]
 
 export const SidebarNav = () => {
   return (
-    <Sidebar className="hidden md:fixed md:flex md:flex-col md:w-64 border-r h-full">
-      <SidebarHeader className="p-4">
+    <Sidebar className="hidden md:fixed md:flex md:flex-col md:w-64 border-r h-full bg-white">
+      <SidebarHeader className="p-4 border-b">
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">
             be
@@ -29,14 +28,14 @@ export const SidebarNav = () => {
           <span className="text-xl font-semibold">BeOne CRM</span>
         </div>
       </SidebarHeader>
-      <SidebarContent className="flex-1">
+      <SidebarContent className="flex-1 p-2">
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.to}>
               <NavLink to={item.to} className="w-full">
                 {({ isActive }) => (
                   <SidebarMenuButton
-                    className={cn('w-full justify-start text-base h-12', {
+                    className={cn('w-full justify-start text-base h-11', {
                       'bg-primary/10 text-primary font-bold': isActive,
                     })}
                   >
@@ -49,6 +48,20 @@ export const SidebarNav = () => {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <div className="p-2 border-t">
+        <NavLink to="/perfil" className="w-full">
+          {({ isActive }) => (
+            <SidebarMenuButton
+              className={cn('w-full justify-start text-base h-11', {
+                'bg-primary/10 text-primary font-bold': isActive,
+              })}
+            >
+              <User className="w-5 h-5 mr-3" />
+              <span>Perfil</span>
+            </SidebarMenuButton>
+          )}
+        </NavLink>
+      </div>
     </Sidebar>
   )
 }

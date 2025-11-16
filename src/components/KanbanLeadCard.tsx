@@ -61,14 +61,14 @@ export const KanbanLeadCard = ({ lead, onDragStart }: KanbanLeadCardProps) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">{lead.contact}</p>
+          <p className="text-xs text-muted-foreground mt-1">{lead.phone}</p>
           <div className="flex items-center text-xs text-muted-foreground mt-2">
             <User className="w-3 h-3 mr-1.5 flex-shrink-0" />
             <span>{lead.salesperson}</span>
           </div>
           <div className="flex items-center text-xs text-muted-foreground mt-1">
             <Calendar className="w-3 h-3 mr-1.5 flex-shrink-0" />
-            <span>{lead.entryDate}</span>
+            <span>{lead.createdAt}</span>
           </div>
           {lead.hasNoFollowUp && (
             <div className="flex items-center text-xs text-yellow-700 mt-2 bg-yellow-100 p-1.5 rounded-md">

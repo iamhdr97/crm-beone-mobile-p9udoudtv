@@ -15,12 +15,12 @@ const getHeaderConfig = (pathname: string) => {
     return {
       ...baseConfig,
       title: 'Olá, Vendedor',
-      isGradient: true,
+      isGradient: false,
       actions: (
         <Button
           variant="ghost"
           size="icon"
-          className="text-white"
+          className="text-foreground"
           onClick={() => (window.location.href = '/perfil')}
         >
           <Settings className="h-6 w-6" />
@@ -41,7 +41,7 @@ const getHeaderConfig = (pathname: string) => {
     return { ...baseConfig, title: 'Meus Leads' }
   }
   if (pathname.startsWith('/tarefas')) {
-    return { ...baseConfig, title: 'Minhas Tarefas', showBackButton: true }
+    return { ...baseConfig, title: 'Minhas Tarefas' }
   }
   if (pathname.startsWith('/perfil')) {
     return { ...baseConfig, title: 'Meu Perfil', showBackButton: true }
@@ -58,8 +58,7 @@ export const Header = () => {
   const headerClasses = cn(
     'sticky top-0 z-30 flex items-center justify-between p-4 h-16 md:hidden',
     {
-      'bg-gradient-beone text-white': config.isGradient,
-      'bg-white text-foreground border-b': !config.isGradient,
+      'bg-white text-foreground border-b': true,
     },
   )
 

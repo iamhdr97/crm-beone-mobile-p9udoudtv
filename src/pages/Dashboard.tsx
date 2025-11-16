@@ -1,370 +1,350 @@
+import { useState } from 'react'
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Funnel,
-  FunnelChart,
-  LabelList,
   Legend,
+  Pie,
+  PieChart,
+  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip,
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
   ChartContainer,
-  ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
-import { MoreHorizontal } from 'lucide-react'
+import { Calendar as CalendarIcon } from 'lucide-react'
+import { DateRange } from 'react-day-picker'
+import { addDays, format } from 'date-fns'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { cn } from '@/lib/utils'
 
-const vendedorMetrics = [
-  { title: 'Novos Leads', value: 12 },
-  { title: 'Follow-ups Hoje', value: 8 },
-  { title: 'Fechados no Mês', value: 4 },
-  { title: 'Tarefas Atrasadas', value: 2 },
+const PeriodSelector = ({
+  value,
+  onValueChange,
+}: {
+  value: string
+  onValueChange: (value: string) => void
+}) => (
+  <ToggleGroup
+    type="single"
+    size="sm"
+    value={value}
+    onValueChange={(v) => v && onValueChange(v)}
+    className="border rounded-lg p-0.5"
+  >
+    {['Semana', 'Mês', 'Trimestre', 'Semestre', 'Ano'].map((period) => (
+      <ToggleGroupItem
+        key={period}
+        value={period}
+        className="text-xs px-2 data-[state=on]:bg-primary data-[state=on]:text-white"
+      >
+        {period}
+      </ToggleGroupItem>
+    ))}
+  </ToggleGroup>
+)
+
+const lossReasonsData = [
+  { name: 'Preço', value: 400, fill: 'hsl(var(--chart-1))' },
+  { name: 'Concorrência', value: 300, fill: 'hsl(var(--chart-2))' },
+  { name: 'Timing', value: 300, fill: 'hsl(var(--chart-3))' },
+  { name: 'Sem interesse', value: 200, fill: 'hsl(var(--chart-4))' },
 ]
 
-const todayFollowUps = [
+const salesByValueData = [
+  { name: 'Jan', Vendas: 4000 },
+  { name: 'Fev', Vendas: 3000 },
+  { name: 'Mar', Vendas: 2000 },
+]
+const salesByQuantityData = [
+  { name: 'Jan', Vendas: 25 },
+  { name: 'Fev', Vendas: 18 },
+  { name: 'Mar', Vendas: 12 },
+]
+
+const opportunitiesData = [
   {
-    id: 1,
-    leadName: 'Ligar para Maria Silva',
-    timeAgo: 'Há 2h',
-    description: 'Discutir plano familiar.',
+    name: 'Jan',
+    Aberto: 40,
+    Ganha: 24,
+    Perdido: 10,
   },
   {
-    id: 2,
-    leadName: 'Enviar proposta para João Pereira',
-    timeAgo: 'Há 4h',
-    description: 'Proposta de R$99,90.',
+    name: 'Fev',
+    Aberto: 30,
+    Ganha: 13,
+    Perdido: 5,
   },
 ]
-
-const recentLeads = [
-  { id: 1, name: 'Carlos Andrade', status: 'Novo', origin: 'Instagram' },
-  { id: 2, name: 'Ana Beatriz', status: 'Qualificado', origin: 'Indicação' },
-  { id: 3, name: 'Fernanda Lima', status: 'Novo', origin: 'Facebook' },
-]
-
-const funnelData = [
-  { name: 'Novo', value: 1200, fill: 'hsl(var(--chart-1))' },
-  { name: 'Qualificado', value: 900, fill: 'hsl(var(--chart-2))' },
-  { name: 'Negociação', value: 500, fill: 'hsl(var(--chart-3))' },
-  { name: 'Fechado', value: 200, fill: 'hsl(var(--chart-4))' },
-]
-
-const funnelChartConfig = {
-  value: {
-    label: 'Leads',
-  },
-  Novo: {
-    label: 'Novo',
-    color: 'hsl(var(--chart-1))',
-  },
-  Qualificado: {
-    label: 'Qualificado',
-    color: 'hsl(var(--chart-2))',
-  },
-  Negociação: {
-    label: 'Negociação',
-    color: 'hsl(var(--chart-3))',
-  },
-  Fechado: {
-    label: 'Fechado',
-    color: 'hsl(var(--chart-4))',
-  },
-} satisfies ChartConfig
 
 const performanceData = [
-  { name: 'Ana', fechados: 40 },
-  { name: 'Bruno', fechados: 30 },
-  { name: 'Carlos', fechados: 20 },
-  { name: 'Daniela', fechados: 27 },
-  { name: 'Eduardo', fechados: 18 },
+  { name: 'Ana', Vendas: 40 },
+  { name: 'Bruno', Vendas: 30 },
+  { name: 'Carlos', Vendas: 27 },
 ]
 
-const barChartConfig = {
-  fechados: {
-    label: 'Leads Fechados',
-    color: 'hsl(var(--primary))',
-  },
-} satisfies ChartConfig
-
-const allLeadsData = [
-  {
-    id: 1,
-    nome: 'Juliana Paes',
-    status: 'Negociação',
-    vendedor: 'Ana',
-    criadoEm: '2025-11-10',
-  },
-  {
-    id: 2,
-    nome: 'Marcos Mion',
-    status: 'Qualificado',
-    vendedor: 'Bruno',
-    criadoEm: '2025-11-11',
-  },
+const leadsByStageData = [
+  { name: 'Pré-qualificação', value: 45, fill: 'hsl(var(--chart-1))' },
+  { name: 'Qualificação', value: 25, fill: 'hsl(var(--chart-2))' },
+  { name: 'Negociação', value: 15, fill: 'hsl(var(--chart-3))' },
+  { name: 'Proposta', value: 10, fill: 'hsl(var(--chart-4))' },
+  { name: 'Agendamento', value: 5, fill: 'hsl(var(--chart-5))' },
 ]
-
-const userRole = 'coordenador'
-
-const VendedorDashboard = () => (
-  <div className="space-y-6">
-    <div className="bg-gradient-beone text-white -mx-4 -mt-4 md:hidden p-4 pt-20 rounded-b-3xl">
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {vendedorMetrics.map((metric) => (
-          <Card
-            key={metric.title}
-            className="bg-white/20 backdrop-blur-sm border-0 text-white text-center"
-          >
-            <CardContent className="p-4">
-              <p className="text-3xl font-bold">{metric.value}</p>
-              <p className="text-xs mt-1">{metric.title}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-
-    <div className="p-4 md:p-0">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-bold">⏰ Follow-ups de Hoje</h2>
-        <Link to="/tarefas" className="text-sm text-primary font-semibold">
-          Ver todos →
-        </Link>
-      </div>
-      <div className="space-y-3">
-        {todayFollowUps.map((task) => (
-          <Card key={task.id} className="shadow-sm border-l-4 border-attention">
-            <CardContent className="p-4 space-y-3">
-              <div>
-                <p className="font-bold">{task.leadName}</p>
-                <p className="text-xs text-muted-foreground">{task.timeAgo}</p>
-              </div>
-              <p className="text-sm">{task.description}</p>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  className="flex-1 bg-whatsapp hover:bg-whatsapp/90"
-                >
-                  📱 WhatsApp
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 border-primary text-primary"
-                >
-                  ✓ Concluir
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-
-    <div className="p-4 md:p-0">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-bold">👥 Meus Leads Recentes</h2>
-        <Link to="/leads" className="text-sm text-primary font-semibold">
-          Ver todos →
-        </Link>
-      </div>
-      <div className="space-y-3">
-        {recentLeads.map((lead) => (
-          <Card key={lead.id} className="shadow-sm">
-            <CardContent className="p-4 flex justify-between items-center">
-              <div>
-                <p className="font-bold">{lead.name}</p>
-                <p className="text-sm text-muted-foreground">{lead.origin}</p>
-              </div>
-              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
-                {lead.status}
-              </span>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  </div>
-)
-
-const CoordenadorDashboard = () => (
-  <div className="space-y-8">
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Total de Leads</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-bold">1,234</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Taxa de Conversão</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-bold">15.8%</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Novos Leads (Mês)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-bold">182</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Vendas (Mês)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-bold">R$ 25,4k</p>
-        </CardContent>
-      </Card>
-    </div>
-    <div className="grid gap-8 md:grid-cols-2">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Funil de Vendas</CardTitle>
-          <Button asChild variant="link" className="text-primary">
-            <Link to="/funil">Ver Funil Completo →</Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer
-            config={funnelChartConfig}
-            className="mx-auto aspect-square max-h-[300px]"
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <FunnelChart>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel nameKey="name" />}
-                />
-                <Funnel data={funnelData} dataKey="value" nameKey="name">
-                  <LabelList
-                    position="right"
-                    fill="hsl(var(--foreground))"
-                    stroke="none"
-                    dataKey="name"
-                    className="font-semibold"
-                  />
-                </Funnel>
-              </FunnelChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance por Vendedor</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer
-            config={barChartConfig}
-            className="min-h-[300px] w-full"
-          >
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={performanceData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Bar
-                  dataKey="fechados"
-                  fill="var(--color-fechados)"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </div>
-    <Card>
-      <CardHeader>
-        <CardTitle>Leads Recentes</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Vendedor</TableHead>
-              <TableHead>Criado em</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {allLeadsData.map((lead) => (
-              <TableRow key={lead.id}>
-                <TableCell className="font-medium">{lead.nome}</TableCell>
-                <TableCell>{lead.status}</TableCell>
-                <TableCell>{lead.vendedor}</TableCell>
-                <TableCell>{lead.criadoEm}</TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>Ver Detalhes</DropdownMenuItem>
-                      <DropdownMenuItem>Reatribuir</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  </div>
-)
 
 export default function Dashboard() {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2025, 0, 20),
+    to: addDays(new Date(2025, 0, 20), 20),
+  })
+  const [period, setPeriod] = useState('Mês')
+
   return (
-    <>
-      <div className="md:hidden">
-        <VendedorDashboard />
+    <div className="p-4 md:p-6 space-y-6 bg-gray-50">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant={'outline'}
+              className={cn(
+                'w-[300px] justify-start text-left font-normal',
+                !date && 'text-muted-foreground',
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date?.from ? (
+                date.to ? (
+                  <>
+                    {format(date.from, 'LLL dd, y')} -{' '}
+                    {format(date.to, 'LLL dd, y')}
+                  </>
+                ) : (
+                  format(date.from, 'LLL dd, y')
+                )
+              ) : (
+                <span>Selecione uma data</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={setDate}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
-      <div className="hidden md:block p-4">
-        {userRole === 'coordenador' ? (
-          <CoordenadorDashboard />
-        ) : (
-          <VendedorDashboard />
-        )}
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">
+              Total de Leads
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">1,234</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">
+              Taxa de Conversão
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">15.8%</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">
+              Novos Leads (Mês)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">182</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Vendas (Mês)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">R$ 25,4k</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">
+              Tempo Médio de Conversão
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">12 dias</p>
+            <p className="text-xs text-muted-foreground">
+              Criação do lead até o ganho.
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle>Motivos de Perda</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip content={<ChartTooltipContent hideLabel />} />
+                  <Pie data={lossReasonsData} dataKey="value" nameKey="name" />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex-row justify-between items-center">
+            <CardTitle>Oportunidades Abertas, Ganhas ou Perdidas</CardTitle>
+            <PeriodSelector value={period} onValueChange={setPeriod} />
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer>
+                <BarChart data={opportunitiesData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
+                  <YAxis />
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Legend />
+                  <Bar dataKey="Aberto" fill="#3b82f6" radius={4} />
+                  <Bar dataKey="Ganha" fill="#22c55e" radius={4} />
+                  <Bar dataKey="Perdido" fill="#ef4444" radius={4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex-row justify-between items-center">
+            <CardTitle>Vendas em Valor</CardTitle>
+            <PeriodSelector value={period} onValueChange={setPeriod} />
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer>
+                <BarChart data={salesByValueData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
+                  <YAxis
+                    tickFormatter={(value) =>
+                      `R$${new Intl.NumberFormat('pt-BR').format(value)}`
+                    }
+                  />
+                  <Tooltip
+                    formatter={(value: number) =>
+                      `R$${new Intl.NumberFormat('pt-BR').format(value)}`
+                    }
+                    content={<ChartTooltipContent />}
+                  />
+                  <Bar dataKey="Vendas" fill="hsl(var(--primary))" radius={4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex-row justify-between items-center">
+            <CardTitle>Vendas em Quantidade</CardTitle>
+            <PeriodSelector value={period} onValueChange={setPeriod} />
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer>
+                <BarChart data={salesByQuantityData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
+                  <YAxis />
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="Vendas" fill="hsl(var(--primary))" radius={4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex-row justify-between items-center">
+            <CardTitle>Performance por Vendedor</CardTitle>
+            <PeriodSelector value={period} onValueChange={setPeriod} />
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer>
+                <BarChart data={performanceData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
+                  <YAxis />
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="Vendas" fill="hsl(var(--primary))" radius={4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>% de Leads por Etapa do Funil</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[250px] w-full">
+              <ResponsiveContainer>
+                <BarChart data={leadsByStageData} layout="vertical">
+                  <CartesianGrid horizontal={false} />
+                  <XAxis type="number" hide />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="value" radius={4}>
+                    {leadsByStageData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   )
 }

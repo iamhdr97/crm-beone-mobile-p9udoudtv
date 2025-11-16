@@ -6,7 +6,7 @@ import { Header } from '@/components/Header'
 import { Button } from '@/components/ui/button'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
-const noFabPaths = ['/leads/novo']
+const noFabPaths = ['/leads/novo', '/funil']
 
 export default function Layout() {
   const location = useLocation()
@@ -21,7 +21,7 @@ export default function Layout() {
         </div>
         <div className="flex-1 flex flex-col md:ml-64">
           <Header />
-          <main className="flex-1 pb-20 md:pb-0 p-0 md:p-4">
+          <main className="flex-1 pb-20 md:pb-0">
             <Outlet />
           </main>
           <BottomNav />

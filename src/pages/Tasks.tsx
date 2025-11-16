@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { LayoutGrid, Calendar, Mail } from 'lucide-react'
+import { TasksCalendarView } from '@/components/TasksCalendarView'
 
 const taskFilters = ['Pendente', 'Concluída', 'Atrasada']
 
@@ -36,9 +39,8 @@ const mockTasks = [
   },
 ]
 
-export default function Tasks() {
+const TasksCardView = () => {
   const [activeFilter, setActiveFilter] = useState('Pendente')
-
   const filteredTasks = mockTasks.filter((task) => task.status === activeFilter)
 
   const getStatusColor = (status: string) => {
@@ -55,8 +57,8 @@ export default function Tasks() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="sticky top-16 md:top-0 bg-white z-20 p-4 border-b">
+    <>
+      <div className="p-4 border-b">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2">
           {taskFilters.map((status) => (
             <Button
@@ -71,7 +73,6 @@ export default function Tasks() {
           ))}
         </div>
       </div>
-
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task) => (
@@ -99,14 +100,19 @@ export default function Tasks() {
                     size="sm"
                     className="flex-1 bg-whatsapp hover:bg-whatsapp/90 min-w-[120px]"
                   >
-                    📱 WhatsApp
+                    <img
+                      src="https://img.usecurling.com/i?q=whatsapp&color=white"
+                      alt="WhatsApp"
+                      className="w-4 h-4 mr-2"
+                    />
+                    WhatsApp
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     className="flex-1 border-primary text-primary min-w-[120px]"
                   >
-                    📞 Ligar
+                    <Mail className="w-4 h-4 mr-2" /> Enviar E-mail
                   </Button>
                   {task.status !== 'Concluída' && (
                     <Button size="sm" className="flex-1 min-w-[120px]">
@@ -128,6 +134,33 @@ export default function Tasks() {
           </div>
         )}
       </div>
+    </>
+  )
+}
+
+export default function Tasks() {
+  const [view, setView] = useState<'card' | 'calendar'>('card')
+
+  return (
+    <div className="flex flex-col h-full bg-gray-50">
+      <div className="sticky top-16 md:top-0 bg-white z-20 p-4 border-b flex justify-end">
+        <ToggleGroup
+          type="single"
+          value={view}
+          onValueChange={(value: 'card' | 'calendar') =>
+            value && setView(value)
+          }
+          className="border rounded-lg p-1"
+        >
+          <ToggleGroupItem value="card" aria-label="Card View">
+            <LayoutGrid className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="calendar" aria-label="Calendar View">
+            <Calendar className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+      {view === 'card' ? <TasksCardView /> : <TasksCalendarView />}
     </div>
   )
 }
