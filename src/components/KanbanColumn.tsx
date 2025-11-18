@@ -7,6 +7,7 @@ interface KanbanColumnProps {
   onDragStart: (e: React.DragEvent<HTMLDivElement>, leadId: string) => void
   onDrop: (e: React.DragEvent<HTMLDivElement>, stage: KanbanStage) => void
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
+  onLeadClick?: (lead: Lead) => void
 }
 
 export const KanbanColumn = ({
@@ -15,6 +16,7 @@ export const KanbanColumn = ({
   onDragStart,
   onDrop,
   onDragOver,
+  onLeadClick,
 }: KanbanColumnProps) => {
   return (
     <div
@@ -35,6 +37,7 @@ export const KanbanColumn = ({
               key={lead.id}
               lead={lead}
               onDragStart={onDragStart}
+              onEdit={onLeadClick}
             />
           ))
         ) : (

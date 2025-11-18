@@ -16,12 +16,18 @@ import { toast } from '@/hooks/use-toast'
 interface KanbanLeadCardProps {
   lead: Lead
   onDragStart: (e: React.DragEvent<HTMLDivElement>, leadId: string) => void
+  onEdit?: (lead: Lead) => void
 }
 
-export const KanbanLeadCard = ({ lead, onDragStart }: KanbanLeadCardProps) => {
+export const KanbanLeadCard = ({
+  lead,
+  onDragStart,
+  onEdit,
+}: KanbanLeadCardProps) => {
   const [isLossModalOpen, setIsLossModalOpen] = useState(false)
 
-  const handleMarkAsWon = () => {
+  const handleMarkAsWon = (e: React.MouseEvent) => {
+    e.stopPropagation()
     console.log(`Lead ${lead.id} won!`)
     toast({
       title: '🎉 Lead Ganho!',
@@ -30,13 +36,19 @@ export const KanbanLeadCard = ({ lead, onDragStart }: KanbanLeadCardProps) => {
     })
   }
 
+  const handleLossClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsLossModalOpen(true)
+  }
+
   return (
     <>
       <Card
         draggable
         onDragStart={(e) => onDragStart(e, lead.id)}
+        onClick={() => onEdit?.(lead)}
         className={cn(
-          'mb-4 shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-grab active:cursor-grabbing',
+          'mb-4 shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer active:cursor-grabbing',
           {
             'border-2 border-red-500': lead.isDelayed,
           },
@@ -51,12 +63,15 @@ export const KanbanLeadCard = ({ lead, onDragStart }: KanbanLeadCardProps) => {
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 flex-shrink-0"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Editar Lead</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit?.(lead)}>
+                  Editar Lead
+                </DropdownMenuItem>
                 <DropdownMenuItem>Agendar Follow-up</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -81,7 +96,7 @@ export const KanbanLeadCard = ({ lead, onDragStart }: KanbanLeadCardProps) => {
           <Button
             size="sm"
             className="h-7 rounded-md bg-red-500 hover:bg-red-600 text-white text-xs px-2"
-            onClick={() => setIsLossModalOpen(true)}
+            onClick={handleLossClick}
           >
             Perdido
           </Button>

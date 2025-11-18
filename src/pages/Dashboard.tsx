@@ -14,12 +14,8 @@ import {
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-  ChartContainer,
-  ChartTooltipContent,
-  type ChartConfig,
-} from '@/components/ui/chart'
-import { Calendar as CalendarIcon } from 'lucide-react'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
+import { Calendar as CalendarIcon, Download } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 import { addDays, format } from 'date-fns'
 import {
@@ -30,6 +26,21 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { MultiSelect, type Option } from '@/components/MultiSelect'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 const PeriodSelector = ({
   value,
@@ -104,53 +115,91 @@ const leadsByStageData = [
   { name: 'Agendamento', value: 5, fill: 'hsl(var(--chart-5))' },
 ]
 
+const sellerOptions: Option[] = [
+  { value: 'ana', label: 'Ana' },
+  { value: 'bruno', label: 'Bruno' },
+  { value: 'carlos', label: 'Carlos' },
+  { value: 'sofia', label: 'Sofia' },
+]
+
+const funnelTableData = [
+  { stage: 'Pré-qualificação', quantity: 45, percentage: '45%' },
+  { stage: 'Qualificação', quantity: 25, percentage: '25%' },
+  { stage: 'Negociação', quantity: 15, percentage: '15%' },
+  { stage: 'Proposta', quantity: 10, percentage: '10%' },
+  { stage: 'Agendamento', quantity: 5, percentage: '5%' },
+]
+
 export default function Dashboard() {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2025, 0, 20),
     to: addDays(new Date(2025, 0, 20), 20),
   })
   const [period, setPeriod] = useState('Mês')
+  const [selectedSellers, setSelectedSellers] = useState<string[]>([])
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-gray-50">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              id="date"
-              variant={'outline'}
-              className={cn(
-                'w-[300px] justify-start text-left font-normal',
-                !date && 'text-muted-foreground',
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date?.from ? (
-                date.to ? (
-                  <>
-                    {format(date.from, 'LLL dd, y')} -{' '}
-                    {format(date.to, 'LLL dd, y')}
-                  </>
+        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+          <MultiSelect
+            options={sellerOptions}
+            selected={selectedSellers}
+            onChange={setSelectedSellers}
+            placeholder="Filtrar por Vendedor"
+            className="w-full md:w-[250px]"
+          />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                variant={'outline'}
+                className={cn(
+                  'w-full md:w-[260px] justify-start text-left font-normal',
+                  !date && 'text-muted-foreground',
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, 'LLL dd, y')} -{' '}
+                      {format(date.to, 'LLL dd, y')}
+                    </>
+                  ) : (
+                    format(date.from, 'LLL dd, y')
+                  )
                 ) : (
-                  format(date.from, 'LLL dd, y')
-                )
-              ) : (
-                <span>Selecione uma data</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              initialFocus
-              mode="range"
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-            />
-          </PopoverContent>
-        </Popover>
+                  <span>Selecione uma data</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full md:w-auto">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>PDF</DropdownMenuItem>
+              <DropdownMenuItem>Excel</DropdownMenuItem>
+              <DropdownMenuItem>CSV</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
@@ -345,6 +394,32 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Tabela do Funil de Vendas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Etapa</TableHead>
+                <TableHead className="text-right">Quantidade</TableHead>
+                <TableHead className="text-right">Porcentagem</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {funnelTableData.map((row) => (
+                <TableRow key={row.stage}>
+                  <TableCell className="font-medium">{row.stage}</TableCell>
+                  <TableCell className="text-right">{row.quantity}</TableCell>
+                  <TableCell className="text-right">{row.percentage}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -38,7 +38,7 @@ const getHeaderConfig = (pathname: string) => {
     return { ...baseConfig, title: '', showBackButton: true }
   }
   if (pathname.startsWith('/leads')) {
-    return { ...baseConfig, title: 'Meus Leads' }
+    return { ...baseConfig, title: 'Meus Contatos' }
   }
   if (pathname.startsWith('/tarefas')) {
     return { ...baseConfig, title: 'Minhas Tarefas' }

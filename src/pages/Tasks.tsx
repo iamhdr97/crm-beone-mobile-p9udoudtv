@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { LayoutGrid, Calendar, Mail } from 'lucide-react'
+import { LayoutGrid, Calendar, Mail, Phone } from 'lucide-react'
 import { TasksCalendarView } from '@/components/TasksCalendarView'
 
 const taskFilters = ['Pendente', 'Concluída', 'Atrasada']
@@ -95,10 +95,10 @@ const TasksCardView = () => {
                     Prazo: {task.dueDate}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Button
                     size="sm"
-                    className="flex-1 bg-whatsapp hover:bg-whatsapp/90 min-w-[120px]"
+                    className="bg-whatsapp hover:bg-whatsapp/90 w-full"
                   >
                     <img
                       src="https://img.usecurling.com/i?q=whatsapp&color=white"
@@ -110,12 +110,19 @@ const TasksCardView = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 border-primary text-primary min-w-[120px]"
+                    className="border-primary text-primary w-full"
                   >
-                    <Mail className="w-4 h-4 mr-2" /> Enviar E-mail
+                    <Mail className="w-4 h-4 mr-2" /> E-mail
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-attention text-attention hover:bg-attention/10 w-full"
+                  >
+                    <Phone className="w-4 h-4 mr-2" /> Ligar
                   </Button>
                   {task.status !== 'Concluída' && (
-                    <Button size="sm" className="flex-1 min-w-[120px]">
+                    <Button size="sm" className="w-full">
                       ✓ Concluir
                     </Button>
                   )}

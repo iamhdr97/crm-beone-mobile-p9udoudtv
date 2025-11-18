@@ -15,9 +15,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Search, MoreHorizontal } from 'lucide-react'
+import { Search, MoreHorizontal, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { LeadStatusBadge, type LeadStatus } from '@/components/LeadStatusBadge'
+import { RegisterContactModal } from '@/components/RegisterContactModal'
 
 const mockLeads = [
   {
@@ -54,6 +55,7 @@ const mockLeads = [
 
 export default function Leads() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const filteredLeads = mockLeads.filter(
     (lead) =>
@@ -65,8 +67,8 @@ export default function Leads() {
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      <div className="sticky top-16 md:top-0 bg-white z-20 p-4 border-b">
-        <div className="relative">
+      <div className="sticky top-16 md:top-0 bg-white z-20 p-4 border-b flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome, telefone, e-mail, empresa..."
@@ -75,6 +77,12 @@ export default function Leads() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full md:w-auto"
+        >
+          <Plus className="w-4 h-4 mr-2" /> Novo Contato
+        </Button>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -136,6 +144,10 @@ export default function Leads() {
           </TableBody>
         </Table>
       </div>
+      <RegisterContactModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   )
 }

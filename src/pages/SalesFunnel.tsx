@@ -6,6 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { RegisterLeadModal } from '@/components/RegisterLeadModal'
+import { EditLeadSheet } from '@/components/EditLeadSheet'
 
 const initialLeads: Lead[] = [
   {
@@ -71,6 +72,7 @@ export default function SalesFunnel() {
   const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null)
   const [activeFunnel, setActiveFunnel] = useState<'B2C' | 'B2B'>('B2C')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingLead, setEditingLead] = useState<Lead | null>(null)
 
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -107,6 +109,13 @@ export default function SalesFunnel() {
     setDraggedLeadId(null)
   }
 
+  const handleSaveLead = (updatedLead: Lead) => {
+    setLeads((prevLeads) =>
+      prevLeads.map((l) => (l.id === updatedLead.id ? updatedLead : l)),
+    )
+    setEditingLead(null)
+  }
+
   const filteredLeads = leads.filter((lead) => lead.funnel === activeFunnel)
 
   return (
@@ -128,7 +137,7 @@ export default function SalesFunnel() {
           </ToggleGroupItem>
         </ToggleGroup>
         <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" /> Cadastrar Lead
+          <Plus className="w-4 h-4 mr-2" /> Nova Oportunidade
         </Button>
       </div>
       <div className="flex-1 p-4 md:p-6 overflow-x-auto">
@@ -141,6 +150,7 @@ export default function SalesFunnel() {
               onDragStart={handleDragStart}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
+              onLeadClick={setEditingLead}
             />
           ))}
         </div>
@@ -148,6 +158,12 @@ export default function SalesFunnel() {
       <RegisterLeadModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+      <EditLeadSheet
+        isOpen={!!editingLead}
+        onClose={() => setEditingLead(null)}
+        lead={editingLead}
+        onSave={handleSaveLead}
       />
     </div>
   )

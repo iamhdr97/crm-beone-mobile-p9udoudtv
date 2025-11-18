@@ -13,7 +13,7 @@ import {
 const navItems = [
   { to: '/dashboard', icon: Home, label: 'Dashboard' },
   { to: '/funil', icon: Filter, label: 'Funil de Vendas' },
-  { to: '/leads', icon: Users, label: 'Leads' },
+  { to: '/leads', icon: Users, label: 'Contatos' },
   { to: '/tarefas', icon: CheckSquare, label: 'Tarefas' },
 ]
 
