@@ -40,6 +40,9 @@ const getHeaderConfig = (pathname: string) => {
   if (pathname.startsWith('/leads')) {
     return { ...baseConfig, title: 'Meus Contatos' }
   }
+  if (pathname.startsWith('/empresas')) {
+    return { ...baseConfig, title: 'Empresas' }
+  }
   if (pathname.startsWith('/tarefas')) {
     return { ...baseConfig, title: 'Minhas Tarefas' }
   }

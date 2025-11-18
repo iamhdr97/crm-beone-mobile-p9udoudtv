@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Users, CheckSquare, User, Filter } from 'lucide-react'
+import { Home, Users, CheckSquare, User, Filter, Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   Sidebar,
@@ -14,6 +14,7 @@ const navItems = [
   { to: '/dashboard', icon: Home, label: 'Dashboard' },
   { to: '/funil', icon: Filter, label: 'Funil de Vendas' },
   { to: '/leads', icon: Users, label: 'Contatos' },
+  { to: '/empresas', icon: Building2, label: 'Empresas' },
   { to: '/tarefas', icon: CheckSquare, label: 'Tarefas' },
 ]
 

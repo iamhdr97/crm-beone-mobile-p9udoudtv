@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import Login from './pages/Index' // Renamed Index to Login
+import Login from './pages/Index'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
@@ -13,6 +13,7 @@ import Tasks from './pages/Tasks'
 import Profile from './pages/Profile'
 import ResetPassword from './pages/ResetPassword'
 import SalesFunnel from './pages/SalesFunnel'
+import Companies from './pages/Companies'
 
 const App = () => (
   <BrowserRouter>
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/leads" element={<Leads />} />
           <Route path="/leads/novo" element={<AddLead />} />
           <Route path="/leads/:id" element={<LeadDetails />} />
+          <Route path="/empresas" element={<Companies />} />
           <Route path="/tarefas" element={<Tasks />} />
           <Route path="/perfil" element={<Profile />} />
         </Route>

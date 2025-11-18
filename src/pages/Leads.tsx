@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Search, MoreHorizontal, Plus } from 'lucide-react'
+import { Search, MoreHorizontal, Plus, Download } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { LeadStatusBadge, type LeadStatus } from '@/components/LeadStatusBadge'
 import { RegisterContactModal } from '@/components/RegisterContactModal'
@@ -77,12 +77,25 @@ export default function Leads() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="w-full md:w-auto"
-        >
-          <Plus className="w-4 h-4 mr-2" /> Novo Contato
-        </Button>
+        <div className="flex gap-2 w-full md:w-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex-1 md:flex-none">
+                <Download className="w-4 h-4 mr-2" /> Exportar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Excel</DropdownMenuItem>
+              <DropdownMenuItem>CSV</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="flex-1 md:flex-none"
+          >
+            <Plus className="w-4 h-4 mr-2" /> Novo Contato
+          </Button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
